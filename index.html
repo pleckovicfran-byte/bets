@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BitcoinMjenjačnica 331</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    background:#070a0f;
+    color:#f4f6f8;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+header{
+    height:68px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 22px;
+    background:#10151d;
+    border-bottom:1px solid #252c36;
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.logo{
+    font-size:20px;
+    font-weight:800;
+}
+
+.logo b{
+    color:#f7931a;
+}
+
+.badge{
+    background:#202732;
+    color:#b7c0cc;
+    padding:7px 11px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:960px;
+    margin:auto;
+    padding:22px;
+}
+
+.balance{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.card{
+    background:#10151d;
+    border:1px solid #252c36;
+    border-radius:17px;
+    padding:20px;
+}
+
+.label{
+    color:#8994a3;
+    font-size:13px;
+}
+
+.big{
+    margin-top:8px;
+    font-size:27px;
+    font-weight:800;
+}
+
+.prices{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    margin:18px 0;
+}
+
+.coin{
+    background:#10151d;
+    border:1px solid #252c36;
+    border-radius:14px;
+    padding:15px;
+}
+
+.coin-name{
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.price{
+    font-size:17px;
+    font-weight:bold;
+}
+
+.update{
+    color:#737f8f;
+    font-size:11px;
+    margin-top:6px;
+}
+
+.tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:15px;
+}
+
+.tab{
+    flex:1;
+    padding:13px;
+    border:0;
+    border-radius:10px;
+    background:#1b222c;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.tab.active{
+    background:#f7931a;
+    color:#111;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+label{
+    display:block;
+    margin:15px 0 7px;
+    color:#929dad;
+    font-size:13px;
+}
+
+input,select{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid #303946;
+    background:#090d12;
+    color:white;
+    outline:none;
+    font-size:15px;
+}
+
+input:focus,select:focus{
+    border-color:#f7931a;
+}
+
+.main{
+    width:100%;
+    margin-top:18px;
+    padding:15px;
+    border:0;
+    border-radius:10px;
+    background:#f7931a;
+    color:#111;
+    font-weight:800;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.main:hover{
+    filter:brightness(1.08);
+}
+
+.preview{
+    margin-top:15px;
+    padding:15px;
+    border-radius:11px;
+    background:#181f28;
+    line-height:1.8;
+}
+
+.address{
+    margin-top:8px;
+    padding:12px;
+    border-radius:9px;
+    background:#090d12;
+    border:1px solid #303946;
+    font-family:monospace;
+    word-break:break-all;
+    color:#bfc8d4;
+}
+
+.success{
+    color:#53d88a;
+}
+
+.tx{
+    padding:15px 0;
+    border-bottom:1px solid #252c36;
+}
+
+.tx-title{
+    font-weight:bold;
+}
+
+.tx-small{
+    margin-top:5px;
+    color:#7f8a99;
+    font-size:12px;
+    word-break:break-all;
+}
+
+.notice{
+    padding:13px;
+    background:#171e27;
+    border-radius:10px;
+    margin-top:15px;
+    color:#aeb8c4;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.faq{
+    margin-top:20px;
+}
+
+.faq-item{
+    border-bottom:1px solid #252c36;
+    padding:15px 0;
+}
+
+.faq-q{
+    font-weight:bold;
+}
+
+.faq-a{
+    color:#929dac;
+    font-size:13px;
+    line-height:1.5;
+    margin-top:7px;
+}
+
+@media(max-width:700px){
+    .prices{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:480px){
+    .balance{
+        grid-template-columns:1fr;
+    }
+
+    .container{
+        padding:14px;
+    }
+
+    header{
+        padding:0 14px;
+    }
+
+    .tabs{
+        flex-wrap:wrap;
+    }
+
+    .tab{
+        min-width:45%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        ₿ Bitcoin<span style="color:white">Mjenjačnica</span>
+    </div>
+
+    <div class="badge">331</div>
+</header>
+
+<div class="container">
+
+<!-- STANJE -->
+
+<div class="balance">
+
+    <div class="card">
+        <div class="label">EUR stanje</div>
+        <div class="big" id="eurBalance">€0.00</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Provizija</div>
+        <div class="big">0%</div>
+    </div>
+
+</div>
+
+<!-- CIJENE -->
+
+<div class="prices">
+
+    <div class="coin">
+        <div class="coin-name">₿ Bitcoin</div>
+        <div class="price" id="btcPrice">Učitavanje...</div>
+        <div class="update" id="btcTime">—</div>
+    </div>
+
+    <div class="coin">
+        <div class="coin-name">◎ Solana</div>
+        <div class="price" id="solPrice">Učitavanje...</div>
+        <div class="update" id="solTime">—</div>
+    </div>
+
+    <div class="coin">
+        <div class="coin-name">◆ Ethereum</div>
+        <div class="price" id="ethPrice">Učitavanje...</div>
+        <div class="update" id="ethTime">—</div>
+    </div>
+
+    <div class="coin">
+        <div class="coin-name">🔴 TRON</div>
+        <div class="price" id="trxPrice">Učitavanje...</div>
+        <div class="update" id="trxTime">—</div>
+    </div>
+
+</div>
+
+<!-- TABOVI -->
+
+<div class="tabs">
+
+    <button class="tab active"
+            onclick="openTab('buy',this)">
+        Kupi
+    </button>
+
+    <button class="tab"
+            onclick="openTab('deposit',this)">
+        Dodaj EUR
+    </button>
+
+    <button class="tab"
+            onclick="openTab('history',this)">
+        Transakcije
+    </button>
+
+</div>
+
+<!-- KUPNJA -->
+
+<div id="buy" class="page active card">
+
+<h2>Kupi kriptovalutu</h2>
+
+<label>Odaberi kriptovalutu</label>
+
+<select id="coinSelect" onchange="calculate()">
+
+    <option value="BTC">Bitcoin (BTC)</option>
+    <option value="SOL">Solana (SOL)</option>
+    <option value="ETH">Ethereum (ETH)</option>
+    <option value="TRX">TRON (TRX)</option>
+
+</select>
+
+<label>Iznos za kupnju (€)</label>
+
+<input
+    id="buyAmount"
+    type="number"
+    min="0"
+    step="0.01"
+    placeholder="npr. 10"
+    oninput="calculate()"
+>
+
+<label>Adresa na koju šaljemo kriptovalutu</label>
+
+<input
+    id="recipient"
+    type="text"
+    placeholder="Unesi adresu primatelja"
+>
+
+<div class="preview">
+
+    <div>
+        Trenutna cijena:
+        <b id="selectedPrice">—</b>
+    </div>
+
+    <div>
+        Naknada:
+        <b class="success">0%</b>
+    </div>
+
+    <div>
+        Dobivaš:
+        <b id="receiveAmount">0</b>
+    </div>
+
+</div>
+
+<button class="main" onclick="buyCrypto()">
+    KUPI I POŠALJI
+</button>
+
+<div class="notice">
+    0% provizije na kupnju. Nakon potvrde kupnje
+    transakcija se prikazuje kao poslana na unesenu adresu.
+</div>
+
+</div>
+
+<!-- DODAJ EUR -->
+
+<div id="deposit" class="page card">
+
+<h2>Dodaj EUR na račun</h2>
+
+<label>Iznos</label>
+
+<input
+    id="depositAmount"
+    type="number"
+    min="0.01"
+    step="0.01"
+    placeholder="npr. 50"
+>
+
+<label>Broj kartice</label>
+
+<input
+    id="cardNumber"
+    type="text"
+    inputmode="numeric"
+    maxlength="19"
+    placeholder="1234 5678 9012 3456"
+>
+
+<label>Datum isteka</label>
+
+<input
+    id="expiry"
+    type="text"
+    maxlength="5"
+    placeholder="02/28"
+>
+
+<label>CVV</label>
+
+<input
+    id="cvv"
+    type="password"
+    inputmode="numeric"
+    maxlength="4"
+    placeholder="123"
+>
+
+<button class="main" onclick="addMoney()">
+    DODAJ EUR
+</button>
+
+<div class="notice">
+    Podaci kartice koriste se samo za simulaciju.
+    Ne šalju se na server i ne spremaju se u localStorage.
+</div>
+
+</div>
+
+<!-- TRANSAKCIJE -->
+
+<div id="history" class="page card">
+
+<h2>Transakcije</h2>
+
+<div id="transactions"></div>
+
+</div>
+
+<!-- FAQ -->
+
+<div class="card faq">
+
+<h2>Često postavljana pitanja</h2>
+
+<div class="faq-item">
+<div class="faq-q">1. Što je BitcoinMjenjačnica?</div>
+<div class="faq-a">
+BitcoinMjenjačnica 331 je simulacija platforme za kupnju kriptovaluta.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">2. Koje kriptovalute mogu kupiti?</div>
+<div class="faq-a">
+Možeš odabrati Bitcoin, Solanu, Ethereum ili TRON.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">3. Kolika je provizija?</div>
+<div class="faq-a">
+Na ovoj simulaciji provizija je 0%.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">4. Kako dodajem EUR?</div>
+<div class="faq-a">
+Otvori „Dodaj EUR”, unesi iznos i demo podatke kartice.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">5. Mogu li poslati kriptovalutu na adresu?</div>
+<div class="faq-a">
+Pri kupnji unosiš adresu primatelja kojoj je transakcija namijenjena.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">6. Koliko često se cijene mijenjaju?</div>
+<div class="faq-a">
+Cijene se automatski osvježavaju svakih 20 sekundi.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">7. Zašto TRON ima više decimala?</div>
+<div class="faq-a">
+TRON ima znatno nižu cijenu po tokenu pa se cijena prikazuje s četiri decimale.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">8. Gdje vidim svoje transakcije?</div>
+<div class="faq-a">
+Sve napravljene kupnje možeš vidjeti u kartici „Transakcije”.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">9. Sprema li se moje EUR stanje?</div>
+<div class="faq-a">
+Da. Stanje i povijest spremaju se lokalno u pregledniku.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-q">10. Spremaju li se podaci kartice?</div>
+<div class="faq-a">
+Ne. Broj kartice, datum isteka i CVV brišu se nakon simulirane uplate.
+</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const STORAGE_KEY =
+    "bitcoinMjenjacnica331_v2";
+
+let state =
+    JSON.parse(
+        localStorage.getItem(STORAGE_KEY)
+    ) || {
+
+        eur:0,
+
+        transactions:[]
+    };
+
+let prices = {
+    BTC:0,
+    SOL:0,
+    ETH:0,
+    TRX:0
+};
+
+function save(){
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(state)
+    );
+
+    updateUI();
+}
+
+function euro(value){
+
+    return new Intl.NumberFormat(
+        "hr-HR",
+        {
+            style:"currency",
+            currency:"EUR"
+        }
+    ).format(value);
+}
+
+function openTab(id,button){
+
+    document.querySelectorAll(".page")
+        .forEach(x =>
+            x.classList.remove("active")
+        );
+
+    document.querySelectorAll(".tab")
+        .forEach(x =>
+            x.classList.remove("active")
+        );
+
+    document.getElementById(id)
+        .classList.add("active");
+
+    button.classList.add("active");
+}
+
+async function updatePrices(){
+
+    try{
+
+        const response = await fetch(
+            "https://api.coingecko.com/api/v3/simple/price" +
+            "?ids=bitcoin,solana,ethereum,tron" +
+            "&vs_currencies=eur"
+        );
+
+        if(!response.ok)
+            throw new Error();
+
+        const data =
+            await response.json();
+
+        prices.BTC =
+            data.bitcoin.eur;
+
+        prices.SOL =
+            data.solana.eur;
+
+        prices.ETH =
+            data.ethereum.eur;
+
+        prices.TRX =
+            data.tron.eur;
+
+        document.getElementById("btcPrice")
+            .textContent =
+            euro(prices.BTC);
+
+        document.getElementById("solPrice")
+            .textContent =
+            euro(prices.SOL);
+
+        document.getElementById("ethPrice")
+            .textContent =
+            euro(prices.ETH);
+
+        document.getElementById("trxPrice")
+            .textContent =
+            prices.TRX.toFixed(4) + " €";
+
+        const time =
+            new Date()
+            .toLocaleTimeString("hr-HR");
+
+        document.getElementById("btcTime")
+            .textContent =
+            "Ažurirano " + time;
+
+        document.getElementById("solTime")
+            .textContent =
+            "Ažurirano " + time;
+
+        document.getElementById("ethTime")
+            .textContent =
+            "Ažurirano " + time;
+
+        document.getElementById("trxTime")
+            .textContent =
+            "Ažurirano " + time;
+
+        calculate();
+
+    }catch(error){
+
+        console.log(
+            "Cijene trenutno nisu dostupne."
+        );
+    }
+}
+
+function calculate(){
+
+    const coin =
+        document.getElementById(
+            "coinSelect"
+        ).value;
+
+    const amount =
+        parseFloat(
+            document.getElementById(
+                "buyAmount"
+            ).value
+        ) || 0;
+
+    const price =
+        prices[coin];
+
+    if(!price){
+
+        document.getElementById(
+            "selectedPrice"
+        ).textContent =
+            "Učitavanje...";
+
+        return;
+    }
+
+    document.getElementById(
+        "selectedPrice"
+    ).textContent =
+        coin === "TRX"
+        ? price.toFixed(4) + " €"
+        : euro(price);
+
+    let crypto =
+        amount / price;
+
+    document.getElementById(
+        "receiveAmount"
+    ).textContent =
+        coin === "TRX"
+        ? crypto.toFixed(4) + " TRX"
+        : crypto.toFixed(8) + " " + coin;
+}
+
+function randomHex(length){
+
+    const chars =
+        "0123456789abcdef";
+
+    let result = "";
+
+    for(let i=0;i<length;i++){
+
+        result +=
+            chars[
+                Math.floor(
+                    Math.random()*chars.length
+                )
+            ];
+    }
+
+    return result;
+}
+
+function createTXID(){
+
+    return "331-" +
+        randomHex(10) + "-" +
+        randomHex(10) + "-" +
+        randomHex(10);
+}
+
+function buyCrypto(){
+
+    const coin =
+        document.getElementById(
+            "coinSelect"
+        ).value;
+
+    const amount =
+        parseFloat(
+            document.getElementById(
+                "buyAmount"
+            ).value
+        );
+
+    const address =
+        document.getElementById(
+            "recipient"
+        ).value.trim();
+
+    const price =
+        prices[coin];
+
+    if(!amount || amount <= 0){
+
+        alert(
+            "Upiši iznos za kupnju."
+        );
+
+        return;
+    }
+
+    if(!price){
+
+        alert(
+            "Cijena trenutno nije dostupna."
+        );
+
+        return;
+    }
+
+    if(!address){
+
+        alert(
+            "Upiši adresu primatelja."
+        );
+
+        return;
+    }
+
+    if(amount > state.eur){
+
+        alert(
+            "Nemaš dovoljno EUR na računu."
+        );
+
+        return;
+    }
+
+    const cryptoAmount =
+        amount / price;
+
+    state.eur -= amount;
+
+    state.transactions.push({
+
+        coin:coin,
+
+        eur:amount,
+
+        crypto:cryptoAmount,
+
+        address:address,
+
+        txid:createTXID(),
+
+        date:
+            new Date()
+            .toLocaleString("hr-HR")
+
+    });
+
+    save();
+
+    document.getElementById(
+        "buyAmount"
+    ).value = "";
+
+    document.getElementById(
+        "recipient"
+    ).value = "";
+
+    alert(
+        "Kupnja je potvrđena.\n\n" +
+        "Iznos: " +
+        euro(amount) +
+        "\nKriptovaluta: " +
+        coin +
+        "\nKoličina: " +
+        cryptoAmount.toFixed(8) +
+        "\n\n0% provizije."
+    );
+}
+
+function addMoney(){
+
+    const amount =
+        parseFloat(
+            document.getElementById(
+                "depositAmount"
+            ).value
+        );
+
+    const card =
+        document.getElementById(
+            "cardNumber"
+        ).value.trim();
+
+    const expiry =
+        document.getElementById(
+            "expiry"
+        ).value.trim();
+
+    const cvv =
+        document.getElementById(
+            "cvv"
+        ).value.trim();
+
+    if(!amount || amount <= 0){
+
+        alert(
+            "Upiši iznos."
+        );
+
+        return;
+    }
+
+    if(!card || !expiry || !cvv){
+
+        alert(
+            "Popuni podatke kartice."
+        );
+
+        return;
+    }
+
+    /*
+      Kartični podaci se namjerno
+      ne spremaju niti šalju.
+    */
+
+    state.eur += amount;
+
+    save();
+
+    document.getElementById(
+        "depositAmount"
+    ).value = "";
+
+    document.getElementById(
+        "cardNumber"
+    ).value = "";
+
+    document.getElementById(
+        "expiry"
+    ).value = "";
+
+    document.getElementById(
+        "cvv"
+    ).value = "";
+
+    alert(
+        "EUR su dodani na račun.\n\n" +
+        "Iznos: " +
+        euro(amount)
+    );
+}
+
+function updateUI(){
+
+    document.getElementById(
+        "eurBalance"
+    ).textContent =
+        euro(state.eur);
+
+    renderTransactions();
+}
+
+function renderTransactions(){
+
+    const box =
+        document.getElementById(
+            "transactions"
+        );
+
+    if(state.transactions.length === 0){
+
+        box.innerHTML =
+            '<div class="tx-small">Još nema transakcija.</div>';
+
+        return;
+    }
+
+    box.innerHTML = "";
+
+    state.transactions
+        .slice()
+        .reverse()
+        .forEach(t => {
+
+            const cryptoText =
+                t.coin === "TRX"
+                ? t.crypto.toFixed(4)
+                : t.crypto.toFixed(8);
+
+            box.innerHTML += `
+
+                <div class="tx">
+
+                    <div class="tx-title success">
+                        ✓ Kupnja ${t.coin}
+                    </div>
+
+                    <div>
+                        ${cryptoText}
+                        ${t.coin}
+                        · ${euro(t.eur)}
+                    </div>
+
+                    <div class="tx-small">
+                        ${t.date}
+                    </div>
+
+                    <div class="tx-small">
+                        Adresa primatelja:
+                        <br>
+                        ${escapeHTML(t.address)}
+                    </div>
+
+                    <div class="tx-small">
+                        TXID:
+                        ${t.txid}
+                    </div>
+
+                    <div class="tx-small success">
+                        0% provizije · Potvrđeno
+                    </div>
+
+                </div>
+            `;
+        });
+}
+
+function escapeHTML(text){
+
+    return text
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+/* učitaj lokalno stanje */
+
+updateUI();
+
+/* učitaj cijene odmah */
+
+updatePrices();
+
+/* osvježi cijene svakih 20 sekundi */
+
+setInterval(
+    updatePrices,
+    20000
+);
+
+</script>
+
+</body>
+</html>
